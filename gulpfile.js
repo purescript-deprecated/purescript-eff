@@ -27,7 +27,7 @@ gulp.task("lint", function() {
 gulp.task("make", ["lint"], function() {
   return gulp.src(sources)
     .pipe(plumber())
-    .pipe(purescript.pscMake({ ffi: foreigns }));
+    .pipe(purescript.psc({ ffi: foreigns }));
 });
 
 gulp.task("docs", function () {
