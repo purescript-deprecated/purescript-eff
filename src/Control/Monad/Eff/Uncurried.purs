@@ -141,6 +141,8 @@ module Control.Monad.Eff.Uncurried where
 
 import Control.Monad.Eff (kind Effect, Eff)
 
+foreign import data EffValue :: # Effect -> Type -> Type
+foreign import data EffFn0 :: # Effect -> Type -> Type
 foreign import data EffFn1 :: # Effect -> Type -> Type -> Type
 foreign import data EffFn2 :: # Effect -> Type -> Type -> Type -> Type
 foreign import data EffFn3 :: # Effect -> Type -> Type -> Type -> Type -> Type
@@ -173,6 +175,10 @@ foreign import mkEffFn9 :: forall eff a b c d e f g h i r.
 foreign import mkEffFn10 :: forall eff a b c d e f g h i j r.
   (a -> b -> c -> d -> e -> f -> g -> h -> i -> j -> Eff eff r) -> EffFn10 eff a b c d e f g h i j r
 
+foreign import runEffValue :: forall eff r.
+  EffValue eff r -> Eff eff r
+foreign import runEffFn0 :: forall eff r.
+  EffFn0 eff r -> Eff eff r
 foreign import runEffFn1 :: forall eff a r.
   EffFn1 eff a r -> a -> Eff eff r
 foreign import runEffFn2 :: forall eff a b r.
