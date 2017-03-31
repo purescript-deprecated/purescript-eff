@@ -60,6 +60,18 @@ exports.mkEffFn10 = function mkEffFn10(fn) {
   };
 };
 
+exports.runEffValue = function runEffValue(v) {
+  return function() {
+    return v;
+  };
+};
+
+exports.runEffFn0 = function runEffFn0(fn) {
+  return function() {
+    return fn();
+  };
+};
+
 exports.runEffFn1 = function runEffFn1(fn) {
   return function(a) {
     return function() {
