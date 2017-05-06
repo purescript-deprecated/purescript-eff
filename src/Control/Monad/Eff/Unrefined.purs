@@ -1,6 +1,5 @@
 module Control.Monad.Eff.Unrefined
   ( Eff
-  , unrefined
   , runEff
   , untilE
   , whileE
@@ -13,6 +12,7 @@ import Control.Applicative (class Applicative)
 import Control.Apply (class Apply)
 import Control.Bind (class Bind)
 import Control.Monad (class Monad)
+import Control.Monad.Eff.Class (class MonadEff)
 import Control.Monad.Eff.Unsafe (unsafeCoerceEff)
 import Data.Function ((<<<))
 import Data.Functor (class Functor)
@@ -22,10 +22,13 @@ foreign import data UNREFINED :: # Refined.Effect
 
 -- | A variant of `Control.Monad.Eff.Eff` without the row of effects.
 -- |
--- | `Unrefined.Eff a` is isomorphic to `exists eff. Refined.Eff a`.
+-- | `Unrefined.Eff a` is isomorphic to `exists eff. Refined.Eff eff a`.
 -- | This variant can be useful sometimes when we are not concerned with the
 -- | particular set of effects. Unrefined effectful computations can be used
 -- | in `main`, just like refined effects, since they share the same representation.
+-- |
+-- | A `MonadEff` instance is provided in order to convert refined effectful
+-- | computations into unrefined ones.
 newtype Eff a = Eff (Refined.Eff UNREFINED a)
 
 derive newtype instance functorEff :: Functor Eff
@@ -34,10 +37,8 @@ derive newtype instance applicativeEff :: Applicative Eff
 derive newtype instance bindEff :: Bind Eff
 derive newtype instance monadEff :: Monad Eff
 
--- | Convert a refined effectful computation into an unrefined one, losing effect
--- | row information.
-unrefined :: forall eff a. Refined.Eff eff a -> Eff a
-unrefined = Eff <<< unsafeCoerceEff
+instance monadEffEff :: MonadEff eff Eff where
+  liftEff = Eff <<< unsafeCoerceEff
 
 refined :: forall a. Eff a -> Refined.Eff UNREFINED a
 refined (Eff u) = u
