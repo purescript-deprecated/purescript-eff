@@ -22,7 +22,7 @@ foreign import data UNREFINED :: # Refined.Effect
 
 -- | A variant of `Control.Monad.Eff.Eff` without the row of effects.
 -- |
--- | `Unrefined.Eff a` is isomorphic to `exists eff. Refined.Effff a`.
+-- | `Unrefined.Eff a` is isomorphic to `exists eff. Refined.Eff a`.
 -- | This variant can be useful sometimes when we are not concerned with the
 -- | particular set of effects. Unrefined effectful computations can be used
 -- | in `main`, just like refined effects, since they share the same representation.
