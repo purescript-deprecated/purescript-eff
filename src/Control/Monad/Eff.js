@@ -57,3 +57,19 @@ exports.foreachE = function (as) {
     };
   };
 };
+
+exports.traverseEImpl = function (foldl) {
+  return function (xs) {
+    return function (f) {
+      var call = function() {
+        return function(x) {
+          f(x)();
+        };
+      };
+
+      return function () {
+        foldl(call)()(xs);
+      };
+    };
+  };
+};
