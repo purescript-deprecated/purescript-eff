@@ -3,7 +3,7 @@ module Control.Monad.Eff
   , Eff
   , Pure
   , runPure
-  , untilE, whileE, forE, foreachE
+  , untilE, whileE, forE, foreachE, traverseE
   ) where
 
 import Control.Applicative (class Applicative, liftA1)
@@ -12,6 +12,7 @@ import Control.Bind (class Bind)
 import Control.Monad (class Monad, ap)
 
 import Data.Functor (class Functor)
+import Data.Foldable (class Foldable, foldl)
 import Data.Unit (Unit)
 
 -- | The kind of all effect types.
@@ -87,3 +88,17 @@ foreign import forE :: forall e. Int -> Int -> (Int -> Eff e Unit) -> Eff e Unit
 -- | `foreachE xs f` runs the computation returned by the function `f` for each
 -- | of the inputs `xs`.
 foreign import foreachE :: forall e a. Array a -> (a -> Eff e Unit) -> Eff e Unit
+
+-- | Loop over a Foldable collection of values.
+-- |
+-- | `traverseE xs f` runs the computation returned by the function `f` for each
+-- | of the inputs `xs`.
+traverseE :: forall e a f. Foldable f => f a -> (a -> Eff e Unit) -> Eff e Unit
+traverseE = traverseEImpl foldl
+
+foreign import traverseEImpl 
+  :: forall e a f
+   . (forall b. (b -> a -> b) -> b -> f a -> b) 
+  -> f a
+  -> (a -> Eff e Unit)
+  -> Eff e Unit
