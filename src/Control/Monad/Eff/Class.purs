@@ -10,14 +10,9 @@ import Control.Monad.Eff (Eff)
 -- | transformers.
 -- |
 -- | `liftEff` can be used in any appropriate monad transformer stack to lift an
--- | action of type `Eff eff a` into the monad.
--- |
--- | Note that `MonadEff` is parameterized by the row of effects, so type
--- | inference can be tricky. It is generally recommended to either work with a
--- | polymorphic row of effects, or a concrete, closed row of effects such as
--- | `(trace :: Trace)`.
-class Monad m <= MonadEff eff m | m -> eff where
-  liftEff :: forall a. Eff eff a -> m a
+-- | action of type `Eff a` into the monad.
+class Monad m <= MonadEff m where
+  liftEff :: forall a. Eff a -> m a
 
-instance monadEffEff :: MonadEff eff (Eff eff) where
+instance monadEffEff :: MonadEff Eff where
   liftEff = id
