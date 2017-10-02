@@ -16,13 +16,12 @@
 -- |
 -- | Because there has been no way of giving such functions types, we generally
 -- | resort to converting functions into the normal PureScript form (namely,
--- | a curried function returning an Eff action), and performing the
+-- | a curried function returning an action), and performing the
 -- | marshalling in JavaScript, in the FFI module, like this:
 -- |
 -- | ```purescript
 -- | -- In the PureScript file:
--- | foreign import logMessage :: forall eff.
--- |   String -> String -> Eff (console :: CONSOLE | eff) Unit
+-- | foreign import logMessage :: String -> String -> Eff Unit
 -- | ```
 -- |
 -- | ```javascript
@@ -48,8 +47,7 @@
 -- |
 -- | ```purescript
 -- | -- In the PureScript file:
--- | foreign import logMessageImpl :: forall eff.
--- |   EffFn2 (console :: CONSOLE | eff) String String Unit
+-- | foreign import logMessageImpl :: EffFn2 String String Unit
 -- | ```
 -- |
 -- | ```javascript
@@ -60,8 +58,7 @@
 -- | You can then use `runEffFn2` to provide a nicer version:
 -- |
 -- | ```purescript
--- | logMessage :: forall eff.
--- |   String -> String -> Eff (console :: CONSOLE | eff) Unit
+-- | logMessage :: String -> String -> Eff Unit
 -- | logMessage = runEffFn2 logMessageImpl
 -- | ```
 -- |
@@ -94,11 +91,10 @@
 -- |
 -- | The import then looks like this:
 -- | ```purescript
--- | foreign import logMessageImpl :: forall eff.
--- |  EffFn3 (http :: HTTP, console :: CONSOLE | eff)
+-- | foreign import logMessageImpl ::
+-- |  EffFn3 String
 -- |         String
--- |         String
--- |         (EffFn1 (http :: HTTP, console :: CONSOLE | eff)
+-- |         (EffFn1
 -- |            (Nullable HttpResponse)
 -- |            Unit)
 -- |         Unit
@@ -114,11 +110,11 @@
 -- | PureScript version:
 -- |
 -- | ```purescript
--- | logMessage :: forall eff.
+-- | logMessage ::
 -- |   String ->
 -- |   String ->
--- |   (Nullable HttpResponse -> Eff (http :: HTTP, console :: CONSOLE | eff) Unit) ->
--- |   Eff (http :: HTTP, console :: CONSOLE | eff) Unit
+-- |   (Nullable HttpResponse -> Eff Unit) ->
+-- |   Eff Unit
 -- | logMessage level message callback =
 -- |   runEffFn3 logMessageImpl level message (mkEffFn1 callback)
 -- | ```
@@ -127,69 +123,67 @@
 -- | follows:
 -- |
 -- | * `EffFn{N}` means, a curried function which accepts N arguments and
--- |   performs some effects. The first type argument is the row of effects,
--- |   which works exactly the same way as in `Eff`. The last type argument
--- |   is the return type. All other arguments are the actual function's
--- |   arguments.
+-- |   performs some effects. The type argument represents the return type.
+-- |   All other arguments are the actual function's arguments.
 -- | * `runEffFn{N}` takes an `EffFn` of N arguments, and converts it into the
--- |   normal PureScript form: a curried function which returns an Eff action.
+-- |   normal PureScript form: a curried function which returns an action.
 -- | * `mkEffFn{N}` is the inverse of `runEffFn{N}`. It can be useful for
 -- |   callbacks.
 -- |
 
 module Control.Monad.Eff.Uncurried where
 
-import Control.Monad.Eff (kind Effect, Eff)
+import Control.Monad.Eff (Eff)
 
-foreign import data EffFn1 :: # Effect -> Type -> Type -> Type
-foreign import data EffFn2 :: # Effect -> Type -> Type -> Type -> Type
-foreign import data EffFn3 :: # Effect -> Type -> Type -> Type -> Type -> Type
-foreign import data EffFn4 :: # Effect -> Type -> Type -> Type -> Type -> Type -> Type
-foreign import data EffFn5 :: # Effect -> Type -> Type -> Type -> Type -> Type -> Type -> Type
-foreign import data EffFn6 :: # Effect -> Type -> Type -> Type -> Type -> Type -> Type -> Type -> Type
-foreign import data EffFn7 :: # Effect -> Type -> Type -> Type -> Type -> Type -> Type -> Type -> Type -> Type
-foreign import data EffFn8 :: # Effect -> Type -> Type -> Type -> Type -> Type -> Type -> Type -> Type -> Type -> Type
-foreign import data EffFn9 :: # Effect -> Type -> Type -> Type -> Type -> Type -> Type -> Type -> Type -> Type -> Type -> Type
-foreign import data EffFn10 :: # Effect -> Type -> Type -> Type -> Type -> Type -> Type -> Type -> Type -> Type -> Type -> Type -> Type
+foreign import data EffFn1 :: Type -> Type -> Type
+foreign import data EffFn2 :: Type -> Type -> Type -> Type
+foreign import data EffFn3 :: Type -> Type -> Type -> Type -> Type
+foreign import data EffFn4 :: Type -> Type -> Type -> Type -> Type -> Type
+foreign import data EffFn5 :: Type -> Type -> Type -> Type -> Type -> Type -> Type
+foreign import data EffFn6 :: Type -> Type -> Type -> Type -> Type -> Type -> Type -> Type
+foreign import data EffFn7 :: Type -> Type -> Type -> Type -> Type -> Type -> Type -> Type -> Type
+foreign import data EffFn8 :: Type -> Type -> Type -> Type -> Type -> Type -> Type -> Type -> Type -> Type
+foreign import data EffFn9 :: Type -> Type -> Type -> Type -> Type -> Type -> Type -> Type -> Type -> Type -> Type
+foreign import data EffFn10 :: Type -> Type -> Type -> Type -> Type -> Type -> Type -> Type -> Type -> Type -> Type -> Type
 
-foreign import mkEffFn1 :: forall eff a r.
-  (a -> Eff eff r) -> EffFn1 eff a r
-foreign import mkEffFn2 :: forall eff a b r.
-  (a -> b -> Eff eff r) -> EffFn2 eff a b r
-foreign import mkEffFn3 :: forall eff a b c r.
-  (a -> b -> c -> Eff eff r) -> EffFn3 eff a b c r
-foreign import mkEffFn4 :: forall eff a b c d r.
-  (a -> b -> c -> d -> Eff eff r) -> EffFn4 eff a b c d r
-foreign import mkEffFn5 :: forall eff a b c d e r.
-  (a -> b -> c -> d -> e -> Eff eff r) -> EffFn5 eff a b c d e r
-foreign import mkEffFn6 :: forall eff a b c d e f r.
-  (a -> b -> c -> d -> e -> f -> Eff eff r) -> EffFn6 eff a b c d e f r
-foreign import mkEffFn7 :: forall eff a b c d e f g r.
-  (a -> b -> c -> d -> e -> f -> g -> Eff eff r) -> EffFn7 eff a b c d e f g r
-foreign import mkEffFn8 :: forall eff a b c d e f g h r.
-  (a -> b -> c -> d -> e -> f -> g -> h -> Eff eff r) -> EffFn8 eff a b c d e f g h r
-foreign import mkEffFn9 :: forall eff a b c d e f g h i r.
-  (a -> b -> c -> d -> e -> f -> g -> h -> i -> Eff eff r) -> EffFn9 eff a b c d e f g h i r
-foreign import mkEffFn10 :: forall eff a b c d e f g h i j r.
-  (a -> b -> c -> d -> e -> f -> g -> h -> i -> j -> Eff eff r) -> EffFn10 eff a b c d e f g h i j r
+foreign import mkEffFn1 :: forall a r.
+  (a -> Eff r) -> EffFn1 a r
+foreign import mkEffFn2 :: forall a b r.
+  (a -> b -> Eff r) -> EffFn2 a b r
+foreign import mkEffFn3 :: forall a b c r.
+  (a -> b -> c -> Eff r) -> EffFn3 a b c r
+foreign import mkEffFn4 :: forall a b c d r.
+  (a -> b -> c -> d -> Eff r) -> EffFn4 a b c d r
+foreign import mkEffFn5 :: forall a b c d e r.
+  (a -> b -> c -> d -> e -> Eff r) -> EffFn5 a b c d e r
+foreign import mkEffFn6 :: forall a b c d e f r.
+  (a -> b -> c -> d -> e -> f -> Eff r) -> EffFn6 a b c d e f r
+foreign import mkEffFn7 :: forall a b c d e f g r.
+  (a -> b -> c -> d -> e -> f -> g -> Eff r) -> EffFn7 a b c d e f g r
+foreign import mkEffFn8 :: forall a b c d e f g h r.
+  (a -> b -> c -> d -> e -> f -> g -> h -> Eff r) -> EffFn8 a b c d e f g h r
+foreign import mkEffFn9 :: forall a b c d e f g h i r.
+  (a -> b -> c -> d -> e -> f -> g -> h -> i -> Eff r) -> EffFn9 a b c d e f g h i r
+foreign import mkEffFn10 :: forall a b c d e f g h i j r.
+  (a -> b -> c -> d -> e -> f -> g -> h -> i -> j -> Eff r) -> EffFn10 a b c d e f g h i j r
 
-foreign import runEffFn1 :: forall eff a r.
-  EffFn1 eff a r -> a -> Eff eff r
-foreign import runEffFn2 :: forall eff a b r.
-  EffFn2 eff a b r -> a -> b -> Eff eff r
-foreign import runEffFn3 :: forall eff a b c r.
-  EffFn3 eff a b c r -> a -> b -> c -> Eff eff r
-foreign import runEffFn4 :: forall eff a b c d r.
-  EffFn4 eff a b c d r -> a -> b -> c -> d -> Eff eff r
-foreign import runEffFn5 :: forall eff a b c d e r.
-  EffFn5 eff a b c d e r -> a -> b -> c -> d -> e -> Eff eff r
-foreign import runEffFn6 :: forall eff a b c d e f r.
-  EffFn6 eff a b c d e f r -> a -> b -> c -> d -> e -> f -> Eff eff r
-foreign import runEffFn7 :: forall eff a b c d e f g r.
-  EffFn7 eff a b c d e f g r -> a -> b -> c -> d -> e -> f -> g -> Eff eff r
-foreign import runEffFn8 :: forall eff a b c d e f g h r.
-  EffFn8 eff a b c d e f g h r -> a -> b -> c -> d -> e -> f -> g -> h -> Eff eff r
-foreign import runEffFn9 :: forall eff a b c d e f g h i r.
-  EffFn9 eff a b c d e f g h i r -> a -> b -> c -> d -> e -> f -> g -> h -> i -> Eff eff r
-foreign import runEffFn10 :: forall eff a b c d e f g h i j r.
-  EffFn10 eff a b c d e f g h i j r -> a -> b -> c -> d -> e -> f -> g -> h -> i -> j -> Eff eff r
+foreign import runEffFn1 :: forall a r.
+  EffFn1 a r -> a -> Eff r
+foreign import runEffFn2 :: forall a b r.
+  EffFn2 a b r -> a -> b -> Eff r
+foreign import runEffFn3 :: forall a b c r.
+  EffFn3 a b c r -> a -> b -> c -> Eff r
+foreign import runEffFn4 :: forall a b c d r.
+  EffFn4 a b c d r -> a -> b -> c -> d -> Eff r
+foreign import runEffFn5 :: forall a b c d e r.
+  EffFn5 a b c d e r -> a -> b -> c -> d -> e -> Eff r
+foreign import runEffFn6 :: forall a b c d e f r.
+  EffFn6 a b c d e f r -> a -> b -> c -> d -> e -> f -> Eff r
+foreign import runEffFn7 :: forall a b c d e f g r.
+  EffFn7 a b c d e f g r -> a -> b -> c -> d -> e -> f -> g -> Eff r
+foreign import runEffFn8 :: forall a b c d e f g h r.
+  EffFn8 a b c d e f g h r -> a -> b -> c -> d -> e -> f -> g -> h -> Eff r
+foreign import runEffFn9 :: forall a b c d e f g h i r.
+  EffFn9 a b c d e f g h i r -> a -> b -> c -> d -> e -> f -> g -> h -> i -> Eff r
+foreign import runEffFn10 :: forall a b c d e f g h i j r.
+  EffFn10 a b c d e f g h i j r -> a -> b -> c -> d -> e -> f -> g -> h -> i -> j -> Eff r
