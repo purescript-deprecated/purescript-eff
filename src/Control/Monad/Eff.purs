@@ -6,10 +6,10 @@ module Control.Monad.Eff
   , untilE, whileE, forE, foreachE
   ) where
 
-import Control.Applicative (class Applicative, liftA1)
+import Control.Applicative (class Applicative)
 import Control.Apply (class Apply)
 import Control.Bind (class Bind)
-import Control.Monad (class Monad, ap)
+import Control.Monad (class Monad)
 
 import Data.Functor (class Functor)
 import Data.Unit (Unit)
@@ -36,10 +36,14 @@ foreign import kind Effect
 foreign import data Eff :: # Effect -> Type -> Type
 
 instance functorEff :: Functor (Eff e) where
-  map = liftA1
+  map = mapE
+
+foreign import mapE :: forall e a b. (a -> b) -> Eff e a -> Eff e b
 
 instance applyEff :: Apply (Eff e) where
-  apply = ap
+  apply = applyE
+
+foreign import applyE :: forall e a b. Eff e (a -> b) -> Eff e a-> Eff e b
 
 instance applicativeEff :: Applicative (Eff e) where
   pure = pureE
