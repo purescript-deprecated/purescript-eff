@@ -4,10 +4,6 @@ import Prelude
 
 import Control.Monad.Eff (Eff)
 import Control.Apply (lift2)
-import Control.Monad.Eff.Class (class MonadEff)
-import Control.Monad.Eff (Eff)
--- import Control.Monad.Eff.Console (CONSOLE)
-
 
 testLift2 :: Eff () Unit
 testLift2 = do
