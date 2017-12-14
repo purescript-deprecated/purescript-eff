@@ -66,15 +66,15 @@ main :: Eff BenchEff Unit
 main = do
   log "| bench | type | n | mean | stddev | min | max |"
   log "| ----- | ---- | - | ---- | ------ | --- | --- |"
-  bench 1000 ">>=R" testBindRight testBindRight [100, 1000, 5000]
-  bench 1000 ">>=L" testBindLeft testBindLeft [100, 1000, 5000]
-  bench 1000 "map" testMap testMap [100, 1000, 5000]
-  bench 1000 "apply" testApply testApply [100, 1000, 5000]
+  bench 10 ">>=R" testBindRight testBindRight [100, 1000, 5000]
+  bench 10 ">>=L" testBindLeft testBindLeft [100, 1000, 5000]
+  bench 10 "map" testMap testMap [100, 1000, 5000]
+  bench 10 "apply" testApply testApply [100, 1000, 5000]
   log "| - | - | - | - | - | - | - |"
-  bench 5 ">>=R" testBindRight testBindRight [10000, 50000, 100000, 1000000]
-  bench 5 ">>=L" testBindLeft testBindLeft [10000, 50000, 100000, 1000000]
-  bench 5 "map" testMap testMap [10000, 50000, 100000, 1000000, 350000, 700000]
-  bench 5 "apply" testApply testApply [10000, 50000, 100000, 1000000]
+  bench 2 ">>=R" testBindRight testBindRight [10000, 50000, 100000, 1000000]
+  bench 2 ">>=L" testBindLeft testBindLeft [10000, 50000, 100000, 1000000]
+  bench 2 "map" testMap testMap [10000, 50000, 100000, 1000000, 350000, 700000]
+  bench 2 "apply" testApply testApply [10000, 50000, 100000, 1000000]
 
 bench
   :: Int
