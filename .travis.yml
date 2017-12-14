@@ -11,9 +11,10 @@ install:
   - chmod a+x $HOME/purescript
   - npm install -g bower
   - npm install
-  - bower install
+  - npm run install
 script:
   - npm run -s build
+  - npm run -s bench:build
   - npm run -s test
 after_success:
 - >-
