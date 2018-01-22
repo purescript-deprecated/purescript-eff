@@ -1,0 +1,12 @@
+{
+  "name": "purescript-eff-aff-bench",
+  "dependencies": {
+    "purescript-foldable-traversable": "^3.6.1",
+    "purescript-minibench": "safareli/purescript-minibench#un-log",
+    "purescript-eff": "safareli/purescript-eff#fast",
+    "purescript-aff": "^4.0.1"
+  },
+  "resolutions": {
+    "purescript-eff": "fast"
+  }
+}

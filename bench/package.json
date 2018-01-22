@@ -1,0 +1,10 @@
+{
+    "private": true,
+    "scripts": {
+      "clean": "rimraf output && rimraf .pulp-cache",
+      "bench": "npm run build && npm run run",
+      "run": "node --expose-gc -e 'require(\"./output/Bench.Main/index.js\").main()'",
+      "build": "pulp build -- --censor-lib --strict"
+    }
+  }
+  
