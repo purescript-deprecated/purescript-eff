@@ -6,12 +6,14 @@ module Control.Monad.Eff
   , untilE, whileE, forE, foreachE
   ) where
 
-import Control.Applicative (class Applicative, liftA1)
-import Control.Apply (class Apply)
+import Control.Applicative (class Applicative, liftA1, pure)
+import Control.Apply (class Apply, lift2)
 import Control.Bind (class Bind)
 import Control.Monad (class Monad, ap)
 
 import Data.Functor (class Functor)
+import Data.Monoid (class Monoid, mempty)
+import Data.Semigroup (class Semigroup, append)
 import Data.Unit (Unit)
 
 -- | The kind of all effect types.
@@ -34,6 +36,12 @@ foreign import kind Effect
 -- | in which a computation can be run, and the second type parameter is the
 -- | return type.
 foreign import data Eff :: # Effect -> Type -> Type
+
+instance semigroupEff :: Semigroup a => Semigroup (Eff e a) where
+  append = lift2 append
+
+instance monoidEff :: Monoid a => Monoid (Eff e a) where
+  mempty = pure mempty
 
 instance functorEff :: Functor (Eff e) where
   map = liftA1
