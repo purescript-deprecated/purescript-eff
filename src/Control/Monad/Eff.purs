@@ -29,7 +29,7 @@ foreign import kind Effect
 
 -- | The `Eff` type constructor is used to represent _native_ effects.
 -- |
--- | See [Handling Native Effects with the Eff Monad](http://www.purescript.org/learn/eff/)
+-- | See [Handling Native Effects with the Eff Monad](https://github.com/purescript/documentation/blob/master/guides/Eff.md)
 -- | for more details.
 -- |
 -- | The first type parameter is a row of effects which represents the contexts
