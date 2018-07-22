@@ -1,16 +1,7 @@
-# purescript-eff
+# DEPRECATED
 
-[![Latest release](http://img.shields.io/github/release/purescript/purescript-eff.svg)](https://github.com/purescript/purescript-eff/releases)
-[![Build status](https://travis-ci.org/purescript/purescript-eff.svg?branch=master)](https://travis-ci.org/purescript/purescript-eff)
+As of PureScript 0.12 the default type for handling effects is `Effect` from [`purescript-effect`](https://github.com/purescript/purescript-effect). This differs from `Eff` by removing the row of effect types. This decision was made as getting the effect rows to line up was sometimes quite tricky, without providing a great deal of benefit.
 
-The `Eff` monad, for handling native side effects.
+There is also [`purescript-run`](https://github.com/natefaubion/purescript-run) now, which uses a similar effect row mechanic but provides true algebraic effect handling.
 
-## Installation
-
-```
-bower install purescript-eff
-```
-
-## Documentation
-
-Module documentation is [published on Pursuit](http://pursuit.purescript.org/packages/purescript-eff).
+[The previous releases](https://github.com/purescript-deprecated/purescript-eff/releases) will continue to work for older libraries that still depend on them.
