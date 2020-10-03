@@ -3,9 +3,10 @@
   "homepage": "https://github.com/purescript/purescript-eff",
   "description": "The Eff monad, for handling native side effects",
   "license": "MIT",
+  "keywords": ["pursuit-deprecated"],
   "repository": {
     "type": "git",
-    "url": "git://github.com/purescript/purescript-eff.git"
+    "url": "https://github.com/purescript/purescript-eff.git"
   },
   "ignore": [
     "**/.*",
